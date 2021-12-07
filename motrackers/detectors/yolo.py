@@ -23,7 +23,7 @@ class YOLOv3(Detector):
         object_names = load_labelsjson(labels_path)
 
         layer_names = self.net.getLayerNames()
-        self.layer_names = [layer_names[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
+        self.layer_names = [layer_names[i-1] for i in self.net.getUnconnectedOutLayers()]
 
         self.scale_factor = 1/255.0
         self.image_size = (416, 416)
@@ -54,12 +54,13 @@ class YOLOv3(Detector):
                 scores = detect[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > self.confidence_threshold:
-                    xmid, ymid, w, h = detect[0:4] * np.array([self.width, self.height, self.width, self.height])
-                    x, y = int(xmid - 0.5*w), int(ymid - 0.5*h)
-                    bboxes.append([x, y, w, h])
-                    confidences.append(float(confidence))
-                    class_ids.append(class_id)
+                if class_id == 0: # to enforce that we need only human labels
+                    if confidence > self.confidence_threshold:
+                        xmid, ymid, w, h = detect[0:4] * np.array([self.width, self.height, self.width, self.height])
+                        x, y = int(xmid - 0.5*w), int(ymid - 0.5*h)
+                        bboxes.append([x, y, w, h])
+                        confidences.append(float(confidence))
+                        class_ids.append(class_id)
 
         indices = cv.dnn.NMSBoxes(bboxes, confidences, self.confidence_threshold, self.nms_threshold).flatten()
         class_ids = np.array(class_ids).astype('int')
