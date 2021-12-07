@@ -267,8 +267,8 @@ def draw_tracks(image, tracks):
 
         text = "ID {}".format(trk_id)
 
-        cv.putText(image, text, (xcentroid - 10, ycentroid - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        cv.circle(image, (xcentroid, ycentroid), 4, (0, 255, 0), -1)
+        cv.putText(image, text, (xcentroid - 10, ycentroid - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
+        cv.circle(image, (xcentroid, ycentroid), 4, (255, 0, 255), -1)
 
     return image
 
